@@ -43,10 +43,9 @@ namespace PracaMagisterskaJG
                 tbFileName.Text = filePath;
                 LoadCsv(filePath);
                 List<int> seeds = GetSeeds();
-                MessageBox.Show(seeds[2].ToString());
-                foreach(int seed in seeds)
+                for(int i = 0; i<30; i++)
                 {
-                    dataSetsList.Add(new DataSet(csvReader, seed));
+                    dataSetsList.Add(new DataSet(csvReader, seeds[i]));
                 }
             }
         }

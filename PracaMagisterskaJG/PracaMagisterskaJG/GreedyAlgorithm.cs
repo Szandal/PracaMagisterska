@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace PracaMagisterskaJG
 {
-    //test
     class GreedyAlgorithm
     {
         List<Dictionary<string, string>> trainingSet;
@@ -48,7 +47,7 @@ namespace PracaMagisterskaJG
             }
             for(int i = 0; i<ListOfSubSets.Count(); i++)
             {
-                subsetsInfo[i].uncertainty = getUncertaintyOfSubset(ListOfSubSets[i]);
+                subsetsInfo[i].uncertainty = getUncertaintyOfSubset(ListOfSubSets[i], decisionHeader);
             }
             int indexOfMinimalUncertainty = getIndexOfMinimalUncertainty(subsetsInfo);
             rule.Add(headerRow[indexOfMinimalUncertainty], example[headerRow[indexOfMinimalUncertainty]]);
@@ -77,9 +76,8 @@ namespace PracaMagisterskaJG
             return minimalIndex;
         }
 
-        private int getUncertaintyOfSubset(List<Dictionary<string, string>> set)
+        public static int getUncertaintyOfSubset(List<Dictionary<string, string>> set, string decisionHeader)
         {
-            // liczba par wierszy o różnych wartościach decyzyji
             int uncertainty = 0;
             for(int i = 0; i < set.Count-1; i++)
             {
