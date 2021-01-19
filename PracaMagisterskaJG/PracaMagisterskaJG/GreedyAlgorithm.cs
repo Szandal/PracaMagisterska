@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace PracaMagisterskaJG
 {
+    //test
     class GreedyAlgorithm
     {
         List<Dictionary<string, string>> trainingSet;
