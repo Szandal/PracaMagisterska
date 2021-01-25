@@ -4,7 +4,8 @@ namespace PracaMagisterskaJG
 {
     public class RuleSet
     {
-        private List<Dictionary<string, string>> ruleSet = new List<Dictionary<string, string>>();
+
+        private List<Rule> ruleSet = new List<Rule>();
         public string decisionHeader;
         public string[] headerRow;
 
@@ -14,12 +15,12 @@ namespace PracaMagisterskaJG
             this.decisionHeader = decisionHeader;
         }
 
-        public List<Dictionary<string, string>> GetRuleSet()
+        public List<Rule> GetRuleSet()
         {
             return ruleSet;
         }
 
-        public void AddRule(Dictionary<string, string> rule)
+        public void AddRule(Rule rule)
         {
             ruleSet.Add(rule);
         }

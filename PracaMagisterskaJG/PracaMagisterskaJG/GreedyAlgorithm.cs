@@ -28,16 +28,17 @@ namespace PracaMagisterskaJG
         {
             foreach(Dictionary<string,string> example in trainingSet)
             {
-                Dictionary<string, string> rule = GetRule(example, trainingSet);
-                string decisionValue = example[decisionHeader];
-                rule.Add(decisionHeader, decisionValue);
+                Rule rule = new Rule();
+                rule.decisionAttributte = decisionHeader; 
+                rule.decisionValue = example[decisionHeader];
+                rule.conditions = GetRule(example, trainingSet);
                 ruleSet.AddRule(rule);
             }
         }
 
-        private Dictionary<string, string> GetRule(Dictionary<string, string> example, List<Dictionary<string, string>> trainingSet)
+        private List<Dictionary<string, string>> GetRule(Dictionary<string, string> example, List<Dictionary<string, string>> trainingSet)
         {
-            Dictionary<string, string> rule = new Dictionary<string, string> ();
+            List<Dictionary<string, string>> rule = new List<Dictionary<string, string>>();
             List<List<Dictionary<string, string>>> ListOfSubSets = new List<List<Dictionary<string, string>>>();
             List<SubsetInfo> subsetsInfo = new List<SubsetInfo>();
             for (int i = 0; i<headerRow.Length-1; i++)
@@ -50,16 +51,18 @@ namespace PracaMagisterskaJG
                 subsetsInfo[i].uncertainty = getUncertaintyOfSubset(ListOfSubSets[i], decisionHeader);
             }
             int indexOfMinimalUncertainty = getIndexOfMinimalUncertainty(subsetsInfo);
-            rule.Add(headerRow[indexOfMinimalUncertainty], example[headerRow[indexOfMinimalUncertainty]]);
-            if(subsetsInfo[indexOfMinimalUncertainty].uncertainty == 0)
+            Dictionary<string, string> condition = new Dictionary<string, string>();
+            condition.Add(headerRow[indexOfMinimalUncertainty], example[headerRow[indexOfMinimalUncertainty]]);
+            rule.Add(condition);
+            if(subsetsInfo[indexOfMinimalUncertainty].uncertainty != 0)
             {
-                return rule;
+                List<Dictionary<string, string>> nextConditions = GetRule(example, ListOfSubSets[indexOfMinimalUncertainty]);
+                foreach(var con in nextConditions)
+                {
+                    rule.Add(con);
+                }
             }
-            else
-            {
-                return rule.Union(GetRule(example, ListOfSubSets[indexOfMinimalUncertainty])).ToDictionary(k => k.Key, v => v.Value);
-            }
-            
+            return rule;
             
         }
 

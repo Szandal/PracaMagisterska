@@ -71,6 +71,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="GreedyAlgorithm.cs" />
+    <Compile Include="Rule.cs" />
     <Compile Include="RuleSet.cs" />
     <Compile Include="TrainValidateTest.cs" />
     <Page Include="MainWindow.xaml">

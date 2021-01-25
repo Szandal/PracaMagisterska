@@ -32,12 +32,11 @@ namespace PracaMagisterskaJG
             RuleSet subruleSet = new RuleSet(dataSet.headerRow, dataSet.decisionHeader);
             int inaccuracyOfTrainingTable = GreedyAlgorithm.getUncertaintyOfSubset(dataSet.trainingSet, dataSet.decisionHeader);
             List<double> inaccuracyList = new List<double>();
-            foreach(Dictionary<string,string> rule in trainRuleSet.GetRuleSet())
+            foreach(Rule rule in trainRuleSet.GetRuleSet())
             {
                 List<Dictionary<string, string>> subsetOfRule = GetSubsetOfRule(rule, dataSet.trainingSet);
-                Dictionary<string, string> subrule = rule;
-                subrule.Remove(dataSet.decisionHeader);
-                subrule.Add(dataSet.decisionHeader, GetMostCommonDecision(subsetOfRule));
+                Rule subrule = rule;
+                subrule.decisionValue = GetMostCommonDecision(subsetOfRule);
                 subruleSet.AddRule(subrule);
                 double inaccuracy = GreedyAlgorithm.getUncertaintyOfSubset(subsetOfRule, dataSet.decisionHeader) / inaccuracyOfTrainingTable;
                 if(!inaccuracyList.Contains(inaccuracy))
@@ -84,9 +83,9 @@ namespace PracaMagisterskaJG
             return result;
         }
 
-        private List<Dictionary<string, string>> GetSubsetOfRule(Dictionary<string, string> rule, List<Dictionary<string, string>> set)
+        private List<Dictionary<string, string>> GetSubsetOfRule(Rule rule, List<Dictionary<string, string>> set)
         {
-            rule.Remove(dataSet.decisionHeader);
+            
             List<Dictionary<string, string>> subset = new List<Dictionary<string, string>>();
             foreach(Dictionary<string,string> example in set)
             {
@@ -98,11 +97,12 @@ namespace PracaMagisterskaJG
             return subset;
         }
 
-        private bool CompareRuleAndExample(Dictionary<string, string> rule, Dictionary<string, string> example)
+        private bool CompareRuleAndExample(Rule rule, Dictionary<string, string> example)
         {
-            foreach (string attributte in rule.Keys)
+
+            foreach (var condition in rule.conditions)
             {
-                if (rule[attributte] != example[attributte])
+                if (condition.First().Value != example[condition.First().Key])
                 {
                     return false;
                 }
