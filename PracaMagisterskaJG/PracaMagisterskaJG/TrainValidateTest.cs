@@ -29,31 +29,71 @@ namespace PracaMagisterskaJG
         private RuleSet Pruning()
         {
             RuleSet ruleSet = new RuleSet(dataSet.headerRow, dataSet.decisionHeader);
-            RuleSet subruleSet = new RuleSet(dataSet.headerRow, dataSet.decisionHeader);
             int inaccuracyOfTrainingTable = GreedyAlgorithm.getUncertaintyOfSubset(dataSet.trainingSet, dataSet.decisionHeader);
-            List<double> inaccuracyList = new List<double>();
-            foreach(Rule rule in trainRuleSet.GetRuleSet())
-            {
-                List<Dictionary<string, string>> subsetOfRule = GetSubsetOfRule(rule, dataSet.trainingSet);
-                Rule subrule = rule;
-                subrule.decisionValue = GetMostCommonDecision(subsetOfRule);
-                subruleSet.AddRule(subrule);
-                double inaccuracy = GreedyAlgorithm.getUncertaintyOfSubset(subsetOfRule, dataSet.decisionHeader) / inaccuracyOfTrainingTable;
-                if(!inaccuracyList.Contains(inaccuracy))
-                    inaccuracyList.Add(inaccuracy);
-            }
-            inaccuracyList.Sort();
+            List<double> inaccuracyList = GetInaccuracyList(trainRuleSet.GetRuleSet(), inaccuracyOfTrainingTable);
+            
             List<RuleSet> ruleSetsList = new List<RuleSet>();
-            foreach(double i in inaccuracyList)
+            foreach(var i in inaccuracyList)
             {
                 ruleSetsList.Add(new RuleSet(dataSet.headerRow, dataSet.decisionHeader));
             }
-
-            for(int i=0; i<inaccuracyList.Count; i++)
+            for(int k = 0; k < ruleSetsList.Count; k++)
             {
-
+                foreach(Rule rule in trainRuleSet.GetRuleSet())
+                {
+                    ruleSetsList[k].AddRule(GetSubruleOfInacurrany(rule, inaccuracyList[k], inaccuracyOfTrainingTable));
+                }
             }
+            ruleSet = GetBestRuleSet(ruleSetsList);
             return ruleSet;
+        }
+
+        private RuleSet GetBestRuleSet(List<RuleSet> ruleSetsList)
+        {
+            throw new NotImplementedException();
+        }
+
+        private Rule GetSubruleOfInacurrany(Rule rule, double inaccurancy, int inaccuracyOfTrainingTable)
+        {
+            List<Rule> subrulesList = new List<Rule>();
+            do
+            {
+                rule.decisionValue = GetMostCommonDecision(GetSubsetOfRule(rule, dataSet.trainingSet));
+                subrulesList.Add(rule);
+                rule.DeleteFirstCondition();
+            } while (rule.conditions.Count > 0);
+            List<double> inaccurancyList = new List<double>();
+            foreach(Rule subrule in subrulesList)
+            {
+                List<Dictionary<string, string>> subsetOfSubRule = GetSubsetOfRule(subrule, dataSet.trainingSet);
+                inaccurancyList.Add(GreedyAlgorithm.getUncertaintyOfSubset(subsetOfSubRule, dataSet.decisionHeader) / inaccuracyOfTrainingTable);
+            }
+            int k = 0;
+            for(int i = 1; i < inaccurancyList.Count; i++)
+            {
+                if (inaccurancyList[i] != inaccurancyList[k] && inaccurancyList[i] <= inaccurancy)
+                    k = i;
+            }
+            return subrulesList[k];
+        }
+
+        private List<double> GetInaccuracyList(List<Rule> rules, int inaccuracyOfTrainingTable)
+        {
+            List<double> inaccuracyList = new List<double>();
+            foreach (Rule rule in rules)
+            {
+                Rule subrule = rule;
+                do
+                {
+                    List<Dictionary<string, string>> subsetOfSubRule = GetSubsetOfRule(subrule, dataSet.trainingSet);
+                    double inaccuracy = GreedyAlgorithm.getUncertaintyOfSubset(subsetOfSubRule, dataSet.decisionHeader) / inaccuracyOfTrainingTable;
+                    if (!inaccuracyList.Contains(inaccuracy))
+                        inaccuracyList.Add(inaccuracy);
+                    subrule.DeleteFirstCondition();
+                } while (subrule.conditions.Count>0);
+            }
+            inaccuracyList.Sort();
+            return inaccuracyList;
         }
 
         private string GetMostCommonDecision(List<Dictionary<string, string>> subsetOfRule)
