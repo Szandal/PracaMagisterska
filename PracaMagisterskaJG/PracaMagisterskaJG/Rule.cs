@@ -50,5 +50,17 @@ namespace PracaMagisterskaJG
         {
             isMinimal = conditions.Count <= 1;
         }
+
+        public bool CompareToExample(Dictionary<string, string> example)
+        {
+            foreach(var condition in conditions)
+            {
+                if(condition.First().Value != example[condition.First().Key])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 }

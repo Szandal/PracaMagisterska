@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace PracaMagisterskaJG
 {
@@ -25,5 +26,42 @@ namespace PracaMagisterskaJG
             ruleSet.Add(rule);
         }
 
+        public string GetListClassyfy(Dictionary<string,string> example)
+        {
+            foreach(Rule rule in ruleSet)
+            {
+                if (rule.CompareToExample(example))
+                {
+                    return rule.decisionValue;
+                }
+            }
+            return GetMostCommonDecision();
+        }
+
+        private string GetMostCommonDecision()
+        {
+            Dictionary<string, int> decisions = new Dictionary<string, int>();
+            foreach(Rule rule in ruleSet)
+            {
+                if (decisions.ContainsKey(rule.decisionValue))
+                {
+                    decisions[rule.decisionValue]++;
+                }
+                else
+                {
+                    decisions.Add(rule.decisionValue, 1);
+                }
+            }
+            string mostCommon = "";
+            int number = 0;
+            foreach(var decision in decisions)
+            {
+                if (decision.Value > number)
+                {
+                    mostCommon = decision.Key;
+                }
+            }
+            return mostCommon;
+        }
     }
 }

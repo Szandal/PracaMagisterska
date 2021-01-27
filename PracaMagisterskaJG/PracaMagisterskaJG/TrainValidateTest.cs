@@ -10,10 +10,13 @@ namespace PracaMagisterskaJG
     {
         private DataSet dataSet;
         private RuleSet trainRuleSet, validateRuleSet;
-
+        public int quality; // number of wrong classyfy in testDataSet
         public TrainValidateTest(DataSet dataSet)
         {
             this.dataSet = dataSet;
+            Train();
+            Validate();
+            Test();
         }
         
         public void Train()
@@ -25,10 +28,12 @@ namespace PracaMagisterskaJG
         {
             validateRuleSet = Pruning();
         }
-
+        public void Test()
+        {
+            quality = GetNumberOfWrongClassyfy(validateRuleSet);
+        }
         private RuleSet Pruning()
         {
-            RuleSet ruleSet = new RuleSet(dataSet.headerRow, dataSet.decisionHeader);
             int inaccuracyOfTrainingTable = GreedyAlgorithm.getUncertaintyOfSubset(dataSet.trainingSet, dataSet.decisionHeader);
             List<double> inaccuracyList = GetInaccuracyList(trainRuleSet.GetRuleSet(), inaccuracyOfTrainingTable);
             
@@ -43,15 +48,41 @@ namespace PracaMagisterskaJG
                 {
                     ruleSetsList[k].AddRule(GetSubruleOfInacurrany(rule, inaccuracyList[k], inaccuracyOfTrainingTable));
                 }
-            }
-            ruleSet = GetBestRuleSet(ruleSetsList);
-            return ruleSet;
+            } 
+            return GetBestRuleSet(ruleSetsList);
         }
 
         private RuleSet GetBestRuleSet(List<RuleSet> ruleSetsList)
         {
-            throw new NotImplementedException();
+            List<int> numberOfWrongClassyfyList = new List<int>();
+            foreach(RuleSet ruleSet in ruleSetsList)
+            {
+                numberOfWrongClassyfyList.Add(GetNumberOfWrongClassyfy(ruleSet));
+            }
+            int indexOfLowest = 0;
+            for(int i = 1; i < numberOfWrongClassyfyList.Count; i++)
+            {
+                if (numberOfWrongClassyfyList[indexOfLowest] > numberOfWrongClassyfyList[i])
+                {
+                    indexOfLowest = numberOfWrongClassyfyList[i];
+                }
+            }
+            return ruleSetsList[indexOfLowest];
         }
+
+        private int GetNumberOfWrongClassyfy(RuleSet ruleSet)
+        {
+            int numberOfWrong = 0;
+            foreach(var example in dataSet.validationSet)
+            {
+                if(example[dataSet.decisionHeader] != ruleSet.GetListClassyfy(example))
+                {
+                    numberOfWrong++;
+                }
+            }
+            return numberOfWrong;
+        }
+
 
         private Rule GetSubruleOfInacurrany(Rule rule, double inaccurancy, int inaccuracyOfTrainingTable)
         {
@@ -129,7 +160,7 @@ namespace PracaMagisterskaJG
             List<Dictionary<string, string>> subset = new List<Dictionary<string, string>>();
             foreach(Dictionary<string,string> example in set)
             {
-                if(CompareRuleAndExample(rule, example))
+                if(rule.CompareToExample(example))
                 {
                     subset.Add(example);
                 }
@@ -137,23 +168,9 @@ namespace PracaMagisterskaJG
             return subset;
         }
 
-        private bool CompareRuleAndExample(Rule rule, Dictionary<string, string> example)
-        {
+   
 
-            foreach (var condition in rule.conditions)
-            {
-                if (condition.First().Value != example[condition.First().Key])
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public void Test()
-        {
-            throw new NotImplementedException();
-        }
+        
 
     }
 }
