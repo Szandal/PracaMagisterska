@@ -13,6 +13,9 @@
                 <Separator />
                 <MenuItem x:Name="menuItemExit" Header="_Zakończ" Click="menuItemExit_Click"  />
             </MenuItem>
+            <MenuItem Header="_Metody">
+                <MenuItem x:Name="menuItemTVT" Header="_Train Validate Test" Click="menuItemTVT_Click"/>
+            </MenuItem>
         </Menu>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>

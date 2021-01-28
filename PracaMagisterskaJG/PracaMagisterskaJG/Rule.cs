@@ -10,10 +10,11 @@ namespace PracaMagisterskaJG
     {
         public List<Dictionary<string, string>> conditions;
         public string decisionAttributte, decisionValue;
-        public bool isMinimal = true;
+        public bool isMinimal;
         public Rule()
         {
             conditions = new List<Dictionary<string, string>>();
+            isMinimal = true;
         }
 
         public void AddCondition(string attributte, string value)
@@ -28,6 +29,7 @@ namespace PracaMagisterskaJG
 
         public void DeleteFirstCondition()
         {
+            CheckIsMinimal();
             if (!isMinimal)
             {
                 conditions.RemoveAt(0);
@@ -38,6 +40,7 @@ namespace PracaMagisterskaJG
 
         public void DeleteLastCondition()
         {
+            CheckIsMinimal();
             if (!isMinimal)
             {
                 conditions.RemoveAt(conditions.Count-1);
@@ -48,7 +51,7 @@ namespace PracaMagisterskaJG
 
         private void CheckIsMinimal()
         {
-            isMinimal = conditions.Count <= 1;
+            isMinimal = conditions.Count == 0;
         }
 
         public bool CompareToExample(Dictionary<string, string> example)

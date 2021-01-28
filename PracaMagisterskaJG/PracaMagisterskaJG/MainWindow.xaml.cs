@@ -41,15 +41,27 @@ namespace PracaMagisterskaJG
                 dataSetsList = new List<DataSet>();
                 filePath = openFileDialog.FileName;
                 tbFileName.Text = filePath;
-                LoadCsv(filePath);
                 List<int> seeds = GetSeeds();
-                for(int i = 0; i<30; i++)
+                for (int i = 0; i<30; i++)
                 {
+                    LoadCsv(filePath);
+                    csvReader.Read();
+                    csvReader.ReadHeader();
                     dataSetsList.Add(new DataSet(csvReader, seeds[i]));
+                    csvReader.Context.CurrentIndex = 0;
                 }
             }
         }
 
+        private List<TrainValidateTest> UseTrainValidateTest()
+        {
+            List<TrainValidateTest> TVTList = new List<TrainValidateTest>();
+            foreach(DataSet dataSet in dataSetsList)
+            {
+                TVTList.Add(new TrainValidateTest(dataSet));
+            }
+            return TVTList;
+        }
         private List<int> GetSeeds()
         {
             List<int> seedsList = new List<int>();
@@ -83,6 +95,15 @@ namespace PracaMagisterskaJG
         private void menuItemExit_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void menuItemTVT_Click(object sender, RoutedEventArgs e)
+        {
+            List<TrainValidateTest> TVTList = UseTrainValidateTest();
+            foreach(var TVT in TVTList)
+            {
+                tbTest.Text += TVT.quality + ",";
+            }
         }
     }
 }

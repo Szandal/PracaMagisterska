@@ -19,15 +19,16 @@ namespace PracaMagisterskaJG
         public DataSet(CsvReader csvReader, int seed)
         {
             ReadEntire(csvReader);
-            SplitSet(seed);
+            Random random = new Random(seed);
+            SplitSet(random);
 
         }
 
         private void ReadEntire(CsvReader csvReader)
         {
             string value;
-            csvReader.Read();
-            csvReader.ReadHeader();
+            //csvReader.Read();
+            //csvReader.ReadHeader();
             headerRow = csvReader.Context.HeaderRecord;
             decisionHeader = headerRow[headerRow.Length - 1];
             while (csvReader.Read())
@@ -40,10 +41,10 @@ namespace PracaMagisterskaJG
                 entireSet.Add(record);
             }
         }
-
-        private void SplitSet(int seed)
+        //zaspieczyć trzeba zdegenerowanie
+       
+        private void SplitSet(Random random)
         {
-            Random random = new Random(seed);
             foreach(var record in entireSet)
             {
                 double rand = random.NextDouble();
@@ -58,6 +59,13 @@ namespace PracaMagisterskaJG
                 {
                     testSet.Add(record);
                 }
+            }
+            if(GreedyAlgorithm.getUncertaintyOfSubset(trainingSet,decisionHeader)==0 || GreedyAlgorithm.getUncertaintyOfSubset(validationSet, decisionHeader) == 0 || GreedyAlgorithm.getUncertaintyOfSubset(testSet, decisionHeader) == 0)
+            {
+                trainingSet = new List<Dictionary<string, string>>();
+                validationSet = new List<Dictionary<string, string>>();
+                testSet = new List<Dictionary<string, string>>();
+                SplitSet(random);  
             }
         }
     }
