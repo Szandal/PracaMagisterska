@@ -9,7 +9,8 @@ namespace PracaMagisterskaJG
     class TrainValidateTest
     {
         private DataSet dataSet;
-        private RuleSet trainRuleSet, validateRuleSet;
+        private RuleSet trainRuleSet;
+        public RuleSet validateRuleSet;
         public int quality; // number of wrong classyfy in testDataSet
         public TrainValidateTest(DataSet dataSet)
         {
@@ -46,7 +47,7 @@ namespace PracaMagisterskaJG
             {
                 foreach(Rule rule in trainRuleSet.GetRuleSet())
                 {
-                    ruleSetsList[k].AddRule(GetSubruleOfInacurrany(rule, inaccuracyList[k], inaccuracyOfTrainingTable));
+                    ruleSetsList[k].AddRule(GetSubruleOfInacurrany(rule.Copy(), inaccuracyList[k], inaccuracyOfTrainingTable));
                 }
             } 
             return GetBestRuleSet(ruleSetsList);
@@ -90,13 +91,13 @@ namespace PracaMagisterskaJG
             do
             {
                 rule.decisionValue = GetMostCommonDecision(GetSubsetOfRule(rule, dataSet.trainingSet));
-                subrulesList.Add(rule);
+                subrulesList.Add(rule.Copy());
                 rule.DeleteFirstCondition();
             } while (rule.conditions.Count > 0);
             List<double> inaccurancyList = new List<double>();
             foreach(Rule subrule in subrulesList)
             {
-                List<Dictionary<string, string>> subsetOfSubRule = GetSubsetOfRule(subrule, dataSet.trainingSet);
+                List<Dictionary<string, string>> subsetOfSubRule = GetSubsetOfRule(subrule.Copy(), dataSet.trainingSet);
                 inaccurancyList.Add(GreedyAlgorithm.getUncertaintyOfSubset(subsetOfSubRule, dataSet.decisionHeader) / inaccuracyOfTrainingTable);
             }
             int k = 0;
@@ -108,12 +109,14 @@ namespace PracaMagisterskaJG
             return subrulesList[k];
         }
 
+        
+
         private List<double> GetInaccuracyList(List<Rule> rules, int inaccuracyOfTrainingTable)
         {
             List<double> inaccuracyList = new List<double>();
             foreach (Rule rule in rules)
             {
-                Rule subrule = rule;
+                Rule subrule = rule.Copy();
                 do
                 {
                     List<Dictionary<string, string>> subsetOfSubRule = GetSubsetOfRule(subrule, dataSet.trainingSet);
@@ -169,7 +172,7 @@ namespace PracaMagisterskaJG
         }
 
    
-
+        
         
 
     }

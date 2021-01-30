@@ -106,18 +106,23 @@ namespace PracaMagisterskaJG
 
         private void menuItemTVT_Click(object sender, RoutedEventArgs e)
         {
-            try
+            List<TrainValidateTest> TVTList = UseTrainValidateTest();
+            TrainValidateTest bestTVT = GetBestQualityTVT(TVTList);
+            string rulesToPrint = bestTVT.validateRuleSet.PrintRules();
+            tbTest.Text = rulesToPrint;
+        }
+
+        private TrainValidateTest GetBestQualityTVT(List<TrainValidateTest> TVTList)
+        {
+            int best = 0;
+            for(int i =1; i<TVTList.Count; i++)
             {
-                List<TrainValidateTest> TVTList = UseTrainValidateTest();
-                foreach (var TVT in TVTList)
+                if(TVTList[best].quality > TVTList[i].quality)
                 {
-                    tbTest.Text += TVT.quality + ",";
+                    best = i;
                 }
             }
-            catch
-            {
-                FileNotFound();
-            }
+            return TVTList[best];
         }
 
         private void FileNotFound()

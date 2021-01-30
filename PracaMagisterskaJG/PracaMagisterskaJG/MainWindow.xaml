@@ -23,7 +23,7 @@
             </StatusBarItem>
         </StatusBar>
         <Grid>
-            <TextBox x:Name="tbTest" HorizontalAlignment="Left" Height="379" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="792"/>
+            <TextBox x:Name="tbTest" HorizontalAlignment="Left" Height="379" TextWrapping="Wrap" VerticalAlignment="Top" Width="792" AcceptsReturn="True"/>
         </Grid>
     </DockPanel>
 

@@ -65,5 +65,31 @@ namespace PracaMagisterskaJG
             }
             return true;
         }
+
+        public string PrintRule()
+        {
+            string rule = "";
+            foreach (var condition in conditions)
+            {
+                rule += "( " + condition.First().Key + " = " + condition.First().Value + " )"; 
+            }
+            rule += " => ( " + decisionAttributte + " = " + decisionValue + " )" ;
+            return rule;
+        }
+
+        internal Rule Copy()
+        {
+            Rule rule = new Rule();
+            rule.decisionAttributte = decisionAttributte;
+            rule.decisionValue = decisionValue;
+            rule.isMinimal = isMinimal;
+            foreach(Dictionary<string,string> d in conditions)
+            {
+                var di = new Dictionary<string, string>();
+                di.Add(d.First().Key, d.First().Value);
+                rule.conditions.Add(di);
+            }
+            return rule;
+        }
     }
 }

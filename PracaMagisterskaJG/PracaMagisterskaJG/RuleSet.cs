@@ -63,5 +63,14 @@ namespace PracaMagisterskaJG
             }
             return mostCommon;
         }
+        public string PrintRules()
+        {
+            string rulesToPrint = "";
+            foreach (Rule rule in ruleSet)
+            {
+                rulesToPrint += rule.PrintRule() + '\n';
+            }
+            return rulesToPrint;
+        }
     }
 }
