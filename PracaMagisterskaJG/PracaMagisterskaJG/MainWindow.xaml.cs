@@ -56,9 +56,16 @@ namespace PracaMagisterskaJG
         private List<TrainValidateTest> UseTrainValidateTest()
         {
             List<TrainValidateTest> TVTList = new List<TrainValidateTest>();
-            foreach(DataSet dataSet in dataSetsList)
+            try
             {
-                TVTList.Add(new TrainValidateTest(dataSet));
+                foreach (DataSet dataSet in dataSetsList)
+                {
+                    TVTList.Add(new TrainValidateTest(dataSet));
+                }
+            }
+            catch
+            {
+                FileNotFound();
             }
             return TVTList;
         }
@@ -99,11 +106,23 @@ namespace PracaMagisterskaJG
 
         private void menuItemTVT_Click(object sender, RoutedEventArgs e)
         {
-            List<TrainValidateTest> TVTList = UseTrainValidateTest();
-            foreach(var TVT in TVTList)
+            try
             {
-                tbTest.Text += TVT.quality + ",";
+                List<TrainValidateTest> TVTList = UseTrainValidateTest();
+                foreach (var TVT in TVTList)
+                {
+                    tbTest.Text += TVT.quality + ",";
+                }
             }
+            catch
+            {
+                FileNotFound();
+            }
+        }
+
+        private void FileNotFound()
+        {
+            MessageBox.Show("Nie załadowano pliku z danymi", "Error");
         }
     }
 }
