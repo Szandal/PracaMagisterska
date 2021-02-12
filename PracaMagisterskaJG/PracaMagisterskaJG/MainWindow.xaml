@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PracaMagisterskaJG"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="875">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Plik">
@@ -14,16 +14,39 @@
                 <MenuItem x:Name="menuItemExit" Header="_Zakończ" Click="menuItemExit_Click"  />
             </MenuItem>
             <MenuItem Header="_Metody">
+                <MenuItem x:Name="menuItemTT" Header="_Train and Test" Click="menuItemTT_Click"/>
                 <MenuItem x:Name="menuItemTVT" Header="_Train Validate Test" Click="menuItemTVT_Click"/>
+                <MenuItem x:Name="menuItemCross" Header="_k-fold Cross Validation" Click="menuItemCross_Click"/>
             </MenuItem>
         </Menu>
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>
                 <TextBlock Name="tbFileName" />
             </StatusBarItem>
+            <Separator Width="1" Grid.ColumnSpan="1" Grid.Column="0" HorizontalAlignment="Center"/>
+            <StatusBarItem>
+                <TextBlock Name="tbSizeOfSet" />
+            </StatusBarItem>
+        </StatusBar>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock Name="tbSizeOfBestTreningSet" />
+            </StatusBarItem>
+            <Separator Width="1" Grid.ColumnSpan="1" Grid.Column="0" HorizontalAlignment="Center"/>
+            <StatusBarItem>
+                <TextBlock Name="tbSizeOfBestValidateSet" />
+            </StatusBarItem>
+            <Separator Width="1" Grid.ColumnSpan="1" Grid.Column="0" HorizontalAlignment="Center"/>
+            <StatusBarItem>
+                <TextBlock Name="tbSizeOfBestTestSet" />
+            </StatusBarItem>
+            <Separator Width="1" Grid.ColumnSpan="1" Grid.Column="0" HorizontalAlignment="Center"/>
+            <StatusBarItem>
+                <TextBlock Name="tbSizeOfBestruleSet" />
+            </StatusBarItem>
         </StatusBar>
         <Grid>
-            <TextBox x:Name="tbTest" HorizontalAlignment="Left" Height="379" TextWrapping="Wrap" VerticalAlignment="Top" Width="792" AcceptsReturn="True"/>
+            <TextBox x:Name="tbTest" Height="357" TextWrapping="Wrap" VerticalAlignment="Top" AcceptsReturn="True" HorizontalAlignment="Left" Width="867"/>
         </Grid>
     </DockPanel>
 

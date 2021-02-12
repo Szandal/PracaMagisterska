@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PracaMagisterskaJG
 {
-    class DataSet
+    class DataSetTVT
     {
         public List<Dictionary<string, string>> entireSet = new List<Dictionary<string, string>>();
         public List<Dictionary<string, string>> trainingSet = new List<Dictionary<string, string>>();
@@ -16,7 +16,7 @@ namespace PracaMagisterskaJG
         public string[] headerRow;
         public string decisionHeader; 
 
-        public DataSet(CsvReader csvReader, int seed)
+        public DataSetTVT(CsvReader csvReader, int seed)
         {
             ReadEntire(csvReader);
             Random random = new Random(seed);

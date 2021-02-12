@@ -8,11 +8,11 @@ namespace PracaMagisterskaJG
 {
     class TrainValidateTest
     {
-        private DataSet dataSet;
+        public DataSetTVT dataSet;
         private RuleSet trainRuleSet;
         public RuleSet validateRuleSet;
         public int quality; // number of wrong classyfy in testDataSet
-        public TrainValidateTest(DataSet dataSet)
+        public TrainValidateTest(DataSetTVT dataSet)
         {
             this.dataSet = dataSet;
             Train();
@@ -109,8 +109,9 @@ namespace PracaMagisterskaJG
             return subrulesList[k];
         }
 
-        
+      
 
+       
         private List<double> GetInaccuracyList(List<Rule> rules, int inaccuracyOfTrainingTable)
         {
             List<double> inaccuracyList = new List<double>();
