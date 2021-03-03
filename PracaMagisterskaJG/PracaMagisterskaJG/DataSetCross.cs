@@ -5,12 +5,9 @@ using System.Threading.Tasks;
 
 namespace PracaMagisterskaJG
 {
-    public class DataSetCross
+    class DataSetCross : DataSet
     {
-        public List<Dictionary<string, string>> entireSet = new List<Dictionary<string, string>>();
         public List<List<Dictionary<string, string>>> ListOfSets;
-        public string[] headerRow;
-        public string decisionHeader;
         public int numberOfSets;
 
         public DataSetCross(CsvReader csvReader, int numberOfSets, int seed)
@@ -68,17 +65,7 @@ namespace PracaMagisterskaJG
             return copy;
         }
 
-        private void ValidateSplitedSets(Random random, int numberOfSets)
-        {
-            for(int i = 0; i < numberOfSets; i++)
-            {
-                if (ListOfSets[i].Count == 0)
-                {
-                    SplitSet(random, numberOfSets);
-                    return;
-                }
-            }
-        }
+
 
         private void CreateLists(int numberOfSets)
         {
@@ -89,27 +76,12 @@ namespace PracaMagisterskaJG
             }
         }
 
-        private void ReadEntire(CsvReader csvReader)
-        {
-            string value;
-            headerRow = csvReader.Context.HeaderRecord;
-            decisionHeader = headerRow[headerRow.Length - 1];
-            while (csvReader.Read())
-            {
-                Dictionary<string, string> record = new Dictionary<string, string>();
-                for (int i = 0; csvReader.TryGetField<string>(i, out value); i++)
-                {
-                    record.Add(headerRow[i], value);
-                }
-                entireSet.Add(record);
-            }
-        }
-
         public List<Dictionary<string, string>> GetTrainingSet(int i)
         {
             List<Dictionary<string, string>> trainingSet = new List<Dictionary<string, string>>();
 
-            Parallel.For(0, ListOfSets.Count, j =>
+            //Parallel.For(0, ListOfSets.Count-1, j =>
+            for(int j=0; j<ListOfSets.Count; j++)
             {
                 if (j != i)
                 {
@@ -117,7 +89,7 @@ namespace PracaMagisterskaJG
                         trainingSet.Add(record);
                 }
             }
-            );
+            /*)*/;
             return trainingSet;
         }
     }

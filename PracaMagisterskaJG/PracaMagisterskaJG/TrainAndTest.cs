@@ -1,46 +1,51 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace PracaMagisterskaJG
 {
-    class TrainAndTest
+    class TrainAndTest : TrainMethod
     {
         public DataSetTT dataSet;
-        public RuleSet ruleSet;
-        public int quality;
         public TrainAndTest(DataSetTT dataSet)
         {
             this.dataSet = dataSet;
             Train();
             Test();
         }
-
-        private void Test()
+        override
+        protected void Test()
         {
-            quality = GetNumberOfWrongClassyfy(ruleSet);
+            quality = Math.Round(ruleSet.GetNumberOfWrongClassyfy(dataSet.testSet) / (double)dataSet.testSet.Count,3);
         }
-
-        private void Train()
+        override
+        protected void Train()
         {
             GreedyAlgorithm greedyAlgorithm = new GreedyAlgorithm(dataSet.trainingSet, dataSet.headerRow, dataSet.decisionHeader);
             ruleSet = greedyAlgorithm.ruleSet;
         }
-
-        private int GetNumberOfWrongClassyfy(RuleSet ruleSet)
+        override
+        public void ExportSet(int set)
         {
-            int numberOfWrong = 0;
-            foreach (var example in dataSet.testSet)
+            List<Dictionary<string, string>> setToExport;
+            switch (set)
             {
-                if (example[dataSet.decisionHeader] != ruleSet.GetListClassyfy(example))
-                {
-                    numberOfWrong++;
-                }
+                case 0:
+                    setToExport = dataSet.trainingSet;
+                    break;
+                case 1:
+                    setToExport = dataSet.testSet;
+                    break;
+                default:
+                    return;
             }
-            return numberOfWrong;
+            ExportCSV.SaveSetToFile(setToExport, dataSet.headerRow);
         }
+
     }
 }
   

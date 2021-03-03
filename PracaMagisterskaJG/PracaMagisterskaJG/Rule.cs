@@ -76,6 +76,16 @@ namespace PracaMagisterskaJG
             rule += " => ( " + decisionAttributte + " = " + decisionValue + " )" ;
             return rule;
         }
+        public string PrintRuleToCSV()
+        {
+            string rule = "";
+            foreach (var condition in conditions)
+            {
+                rule += "(" + condition.First().Key + ":" + condition.First().Value + "),";
+            }
+            rule += "(" + decisionAttributte + ":" + decisionValue + ")";
+            return rule;
+        }
 
         internal Rule Copy()
         {

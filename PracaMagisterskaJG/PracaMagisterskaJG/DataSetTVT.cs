@@ -1,4 +1,4 @@
-﻿using CsvHelper;
+﻿ using CsvHelper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,14 +7,11 @@ using System.Threading.Tasks;
 
 namespace PracaMagisterskaJG
 {
-    class DataSetTVT
+    class DataSetTVT: DataSet
     {
-        public List<Dictionary<string, string>> entireSet = new List<Dictionary<string, string>>();
         public List<Dictionary<string, string>> trainingSet = new List<Dictionary<string, string>>();
         public List<Dictionary<string, string>> validationSet = new List<Dictionary<string, string>>();
-        public List<Dictionary<string, string>> testSet = new List<Dictionary<string, string>>();
-        public string[] headerRow;
-        public string decisionHeader; 
+        public List<Dictionary<string, string>> testSet = new List<Dictionary<string, string>>(); 
 
         public DataSetTVT(CsvReader csvReader, int seed)
         {
@@ -24,25 +21,6 @@ namespace PracaMagisterskaJG
 
         }
 
-        private void ReadEntire(CsvReader csvReader)
-        {
-            string value;
-            //csvReader.Read();
-            //csvReader.ReadHeader();
-            headerRow = csvReader.Context.HeaderRecord;
-            decisionHeader = headerRow[headerRow.Length - 1];
-            while (csvReader.Read())
-            {
-                Dictionary<string, string> record = new Dictionary<string, string>();
-                for (int i = 0; csvReader.TryGetField<string>(i, out value); i++)
-                {
-                    record.Add(headerRow[i], value);
-                }
-                entireSet.Add(record);
-            }
-        }
-        //zaspieczyć trzeba zdegenerowanie
-       
         private void SplitSet(Random random)
         {
             foreach(var record in entireSet)
