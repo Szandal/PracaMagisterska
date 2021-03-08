@@ -24,14 +24,26 @@ namespace PracaMagisterskaJG
     /// </summary>
     public partial class MainWindow : Window
     {
+        enum operation
+        {
+            none,
+            TrainAndTest,
+            TrainValidateTest,
+            CrossValidate
+        };
 
+        private operation lastOperation;
         private CsvReader csvReader;
         private List<DataSetTVT> TVTDataSetsList;
         private List<DataSetTT> TTDataSetsList;
         private List<DataSetCross> CrossDataSetsList;
+        private TrainAndTest bestTT;
+        private TrainValidateTest bestTVT;
+        private k_foldCrossValidation bestCross;
         public MainWindow()
         {
             InitializeComponent();
+            lastOperation = operation.none;
         }
         string filePath = string.Empty;
         private void menuItemOpenFile_Click(object sender, RoutedEventArgs e)
@@ -54,7 +66,6 @@ namespace PracaMagisterskaJG
                 tbFileName.Text = filePath;
             }
         }
-
         private List<TrainValidateTest> UseTrainValidateTest()
         {
             LoadTVTDataSetList();
@@ -72,7 +83,6 @@ namespace PracaMagisterskaJG
             }
             return TVTList;
         }
-
         private void LoadTVTDataSetList()
         {
             List<int> seeds = GetSeeds();
@@ -85,7 +95,6 @@ namespace PracaMagisterskaJG
                 csvReader.Context.CurrentIndex = 0;
             }
         }
-
         private void LoadTTDataSetList(double percent)
         {
             List<int> seeds = GetSeeds();
@@ -98,7 +107,6 @@ namespace PracaMagisterskaJG
                 csvReader.Context.CurrentIndex = 0;
             }
         }
-
         private List<int> GetSeeds()
         {
             List<int> seedsList = new List<int>();
@@ -116,7 +124,6 @@ namespace PracaMagisterskaJG
             }
             return seedsList;
         }
-
         private void LoadCsv(string filePath)
         {
             var streamReader = File.OpenText(filePath);
@@ -125,34 +132,37 @@ namespace PracaMagisterskaJG
             csvReader.Configuration.HasHeaderRecord = true;
             this.csvReader = csvReader;
         }
-
         private void menuItemExit_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
-
         private void menuItemTVT_Click(object sender, RoutedEventArgs e)
         {
+            lastOperation = operation.TrainValidateTest;
             TVTDataSetsList = new List<DataSetTVT>();
             List<TrainValidateTest> TVTList = UseTrainValidateTest();
-            TrainValidateTest bestTVT = GetBestQualityTVT(TVTList);
+            bestTVT = GetBestQualityTVT(TVTList);
             string messageToPrint = PrintQualityInfo(TVTList, bestTVT);
-            messageToPrint += bestTVT.validateRuleSet.PrintRules();
+            messageToPrint += bestTVT.ruleSet.PrintRules();
             tbTest.Text = messageToPrint;
             tbSizeOfSet.Text = "Wielkość zbioru uczącego: " + bestTVT.dataSet.entireSet.Count();
             tbSizeOfBestTreningSet.Text = "Wielkość najlepszego zbioru treningowego: " + bestTVT.dataSet.trainingSet.Count();
             tbSizeOfBestValidateSet.Text = "Wielkość najlepszego zbioru validującego: " + bestTVT.dataSet.validationSet.Count();
             tbSizeOfBestTestSet.Text = "Wielkość najlepszego zbioru testowego: " + bestTVT.dataSet.testSet.Count();
-            tbSizeOfBestruleSet.Text = "Ilość reguł: " + bestTVT.validateRuleSet.GetRuleSet().Count();
+            tbSizeOfBestruleSet.Text = "Ilość reguł: " + bestTVT.ruleSet.GetRuleSet().Count();
         }
-
         private string PrintQualityInfo(List<TrainValidateTest> TVTList, TrainValidateTest bestTVT)
         {
             string message = "Średnia jakość klasyfikatora wyniosła: " + GetAVGQuality(TVTList) + "\n";
             message += "Najlepsza jakość klasyfikatora wyniosła: " + bestTVT.quality.ToString() + "\n";
+            List<double> qualities = new List<double>();
+            foreach (var TVT in TVTList)
+            {
+                qualities.Add(TVT.quality);
+            }
+            message += "Odchylenie standardowe jakości klasyfikatora wyniosło: " + StandardDeviation(qualities) + "\n";
             return message;
         }
-
         private string GetAVGQuality(List<TrainValidateTest> TVTList)
         {
             double quality = 0; 
@@ -160,9 +170,8 @@ namespace PracaMagisterskaJG
             {
                 quality += TVT.quality;
             }
-            return (quality / TVTList.Count()).ToString();
+            return (Math.Round(quality / TVTList.Count(), 3)).ToString();
         }
-
         private TrainValidateTest GetBestQualityTVT(List<TrainValidateTest> TVTList)
         {
             int best = 0;
@@ -175,14 +184,13 @@ namespace PracaMagisterskaJG
             }
             return TVTList[best];
         }
-
         private void FileNotFound()
         {
             MessageBox.Show("Nie załadowano pliku z danymi", "Error");
         }
-
         private void menuItemTT_Click(object sender, RoutedEventArgs e)
         {
+            lastOperation = operation.TrainAndTest;
             double percent = 0;
             PercentDialog pd = new PercentDialog();
             if (pd.ShowDialog()== true)
@@ -197,7 +205,7 @@ namespace PracaMagisterskaJG
             LoadTTDataSetList(percent);
             List<TrainAndTest> TTList = UseTrainAndTest();
 
-            TrainAndTest bestTT = GetBestQualityTT(TTList);
+            bestTT = GetBestQualityTT(TTList);
             string messageToPrint = PrintQualityInfo(TTList, bestTT);
             messageToPrint += bestTT.ruleSet.PrintRules();
             tbTest.Text = messageToPrint;
@@ -211,9 +219,14 @@ namespace PracaMagisterskaJG
         {
             string message = "Średnia jakość klasyfikatora wyniosła: " + GetAVGQuality(TTList) + "\n";
             message += "Najlepsza jakość klasyfikatora wyniosła: " + bestTT.quality.ToString() + "\n";
+            List<double> qualities = new List<double>();
+            foreach(var TT in TTList)
+            {
+                qualities.Add(TT.quality);
+            }
+            message += "Odchylenie standardowe jakości klasyfikatora wyniosło: " + StandardDeviation(qualities) + "\n";
             return message;
         }
-
         private string GetAVGQuality(List<TrainAndTest> TTList)
         {
             double quality = 0;
@@ -223,7 +236,6 @@ namespace PracaMagisterskaJG
             }
             return (quality / TTList.Count()).ToString();
         }
-
         private TrainAndTest GetBestQualityTT(List<TrainAndTest> TTList)
         {
             int best = 0;
@@ -236,7 +248,6 @@ namespace PracaMagisterskaJG
             }
             return TTList[best];
         }
-
         private List<TrainAndTest> UseTrainAndTest()
         {
             List<TrainAndTest> TTList = new List<TrainAndTest>();
@@ -254,9 +265,9 @@ namespace PracaMagisterskaJG
             }
             return TTList;
         }
-
         private void menuItemCross_Click(object sender, RoutedEventArgs e)
         {
+            lastOperation = operation.CrossValidate;
             int numberOfSets = 0;
             NumberOfSetsDialog pd = new NumberOfSetsDialog();
             if (pd.ShowDialog() == true)
@@ -271,7 +282,7 @@ namespace PracaMagisterskaJG
             LoadCrossDataSetList(numberOfSets);
             List<k_foldCrossValidation> kList = UseKFoldCrossValidation();
 
-            k_foldCrossValidation bestCross = GetBestQualityCross(kList);
+            bestCross = GetBestQualityCross(kList);
             string messageToPrint = PrintQualityInfo(kList, bestCross);
             messageToPrint += bestCross.ruleSet.PrintRules();
             tbTest.Text = messageToPrint;
@@ -281,37 +292,39 @@ namespace PracaMagisterskaJG
             tbSizeOfBestTestSet.Text = "";
             tbSizeOfBestruleSet.Text = "Ilość reguł: " + bestCross.ruleSet.GetRuleSet().Count();
         }
-
         private string PrintQualityInfo(List<k_foldCrossValidation> kList, k_foldCrossValidation bestCross)
         {
             string message = "Średnia jakość klasyfikatora wyniosła: " + GetAVGQuality(kList) + "\n";
-            message += "Najlepsza jakość klasyfikatora wyniosła: " + bestCross.AVGQuality.ToString() + "\n";
+            message += "Najlepsza jakość klasyfikatora wyniosła: " + bestCross.quality.ToString() + "\n";
+            List<double> qualities = new List<double>();
+            foreach (var k in kList)
+            {
+                qualities.Add(k.quality);
+            }
+            message += "Odchylenie standardowe jakości klasyfikatora wyniosło: " + StandardDeviation(qualities) + "\n";
             return message;
         }
-
         private string GetAVGQuality(List<k_foldCrossValidation> kList)
         {
             double quality = 0;
             foreach (var k in kList)
             {
-                quality += k.AVGQuality;
+                quality += k.quality;
             }
-            return (quality / kList.Count()).ToString();
+            return (Math.Round(quality / kList.Count(), 3)).ToString();
         }
-
         private k_foldCrossValidation GetBestQualityCross(List<k_foldCrossValidation> kList)
         {
             int best = 0;
             for (int i = 1; i < kList.Count; i++)
             {
-                if (kList[best].AVGQuality > kList[i].AVGQuality)
+                if (kList[best].quality > kList[i].quality)
                 {
                     best = i;
                 }
             }
             return kList[best];
         }
-
         private void LoadCrossDataSetList(int numberOfSets)
         {
             List<int> seeds = GetSeeds();
@@ -324,7 +337,6 @@ namespace PracaMagisterskaJG
                 csvReader.Context.CurrentIndex = 0;
             }
         }
-
         private List<k_foldCrossValidation> UseKFoldCrossValidation()
         {
             List<k_foldCrossValidation> crossList = new List<k_foldCrossValidation>();
@@ -347,5 +359,92 @@ namespace PracaMagisterskaJG
             }
             return crossList;
         }
+        private void exportTrain_Click(object sender, RoutedEventArgs e)
+        {
+            switch (lastOperation)
+            {
+                case operation.none:
+                    MessageBox.Show("Żadna operacja klasyfikacji nie została jeszcze wykonana", "Brak danych do eksportu", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case operation.TrainAndTest:
+                    bestTT.ExportSet(0);
+                    break;
+                case operation.TrainValidateTest:
+                    bestTVT.ExportSet(0);
+                    break;
+                case operation.CrossValidate:
+                    bestCross.ExportSet(0);
+                    break;
+            }
+        }
+
+        private void exportValidate_Click(object sender, RoutedEventArgs e)
+        {
+            if(lastOperation == operation.TrainValidateTest)
+            {
+                bestTVT.ExportSet(1);
+            }
+            else
+            {
+                MessageBox.Show("W wybranej ostanio metodzie nie występuje zbiór walidacyjny", "Brak zbioru do eksportu", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+
+        }
+
+        private void exportTest_Click(object sender, RoutedEventArgs e)
+        {
+            switch (lastOperation)
+            {
+                case operation.none:
+                    MessageBox.Show("Żadna operacja klasyfikacji nie została jeszcze wykonana", "Brak danych do eksportu", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case operation.TrainAndTest:
+                    bestTT.ExportSet(1);
+                    break;
+                case operation.TrainValidateTest:
+                    bestTVT.ExportSet(2);
+                    break;
+                case operation.CrossValidate:
+                    bestCross.ExportSet(1);
+                    break;
+            }
+        }
+
+        private void exportRule_Click(object sender, RoutedEventArgs e)
+        {
+            switch (lastOperation)
+            {
+                case operation.none:
+                    MessageBox.Show("Żadna operacja klasyfikacji nie została jeszcze wykonana", "Brak danych do eksportu", MessageBoxButton.OK, MessageBoxImage.Information);
+                    break;
+                case operation.TrainAndTest:
+                    bestTT.ExportRules();
+                    break;
+                case operation.TrainValidateTest:
+                    bestTVT.ExportRules();
+                    break;
+                case operation.CrossValidate:
+                    bestCross.ExportRules();
+                    break;
+            }
+        }
+
+
+
+        private double StandardDeviation(List<double> qualities)
+        {
+            double AVG = qualities.Average();
+            List<double> upper = new List<double>();
+            foreach(var q in qualities)
+            {
+                double temp = q - AVG;
+                upper.Add(Math.Pow(temp,2));
+            }
+            double sum = qualities.Sum();
+            double SDx2 = sum / (qualities.Count - 1);
+            double SD = Math.Sqrt(SDx2);
+            return Math.Round(SD, 3);
+        }
+
     }
 }

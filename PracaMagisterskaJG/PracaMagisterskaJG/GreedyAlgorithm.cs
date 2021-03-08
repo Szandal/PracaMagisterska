@@ -28,6 +28,8 @@ namespace PracaMagisterskaJG
         {
             foreach(Dictionary<string,string> example in trainingSet)
             {
+                if (example == null)
+                    continue;
                 Rule rule = new Rule();
                 rule.decisionAttributte = decisionHeader; 
                 rule.decisionValue = example[decisionHeader];
@@ -98,8 +100,11 @@ namespace PracaMagisterskaJG
         private List<Dictionary<string, string>> GetSubsetOfAttribute(List<Dictionary<string, string>> trainingSet, string attributeName, Dictionary<string, string> example)
         {
             List<Dictionary<string, string>> resultSet = new List<Dictionary<string, string>>();
+
             foreach(Dictionary<string,string> row in trainingSet)
             {
+                if (row == null)
+                    continue;
                 if(row[attributeName] == example[attributeName])
                 {
                     resultSet.Add(row);

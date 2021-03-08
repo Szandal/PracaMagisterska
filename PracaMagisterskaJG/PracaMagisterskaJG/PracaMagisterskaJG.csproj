@@ -70,8 +70,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="DataSet.cs" />
     <Compile Include="DataSetCross.cs" />
     <Compile Include="DataSetTT.cs" />
+    <Compile Include="ExportCSV.cs" />
     <Compile Include="GreedyAlgorithm.cs" />
     <Compile Include="k-foldCrossValidation.cs" />
     <Compile Include="NumberOfSetsDialog.xaml.cs">
@@ -83,7 +85,9 @@
     <Compile Include="Rule.cs" />
     <Compile Include="RuleSet.cs" />
     <Compile Include="TrainAndTest.cs" />
+    <Compile Include="TrainMethod.cs" />
     <Compile Include="TrainValidateTest.cs" />
+    <Compile Include="ValidationMetod.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -124,6 +128,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Clasyfy.cd" />
+    <None Include="DataSet.cd" />
+    <None Include="Other.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="PracaMagisterskaJG.ExportCSV">
+    <Position X="0.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAQAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>ExportCSV.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PracaMagisterskaJG.GreedyAlgorithm">
+    <Position X="4" Y="0.5" Width="3.75" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="PracaMagisterskaJG.GreedyAlgorithm.SubsetInfo">
+        <TypeIdentifier>
+          <NewMemberFileName>GreedyAlgorithm.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAIAAAgAAAAAAAAKAAIQAAAAAAAAAQAAAAAAAAICAA=</HashCode>
+      <FileName>GreedyAlgorithm.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PracaMagisterskaJG.Rule">
+    <Position X="0.5" Y="5.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAUIACAAMAgAAAAgAAAgAAAAAAAACAAAA=</HashCode>
+      <FileName>Rule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PracaMagisterskaJG.RuleSet">
+    <Position X="0.5" Y="2.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAECAAAAAAAIIAAAAAAAAAAAAAAAAAIIiAA=</HashCode>
+      <FileName>RuleSet.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

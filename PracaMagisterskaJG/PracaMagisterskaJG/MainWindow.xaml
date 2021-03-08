@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PracaMagisterskaJG"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="875">
+        Title="Program do oceny klasyfikatorów" Height="450" Width="875">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_Plik">
@@ -15,8 +15,14 @@
             </MenuItem>
             <MenuItem Header="_Metody">
                 <MenuItem x:Name="menuItemTT" Header="_Train and Test" Click="menuItemTT_Click"/>
-                <MenuItem x:Name="menuItemTVT" Header="_Train Validate Test" Click="menuItemTVT_Click"/>
+                <MenuItem x:Name="menuItemTVT" Header="_Train Validateion Test" Click="menuItemTVT_Click"/>
                 <MenuItem x:Name="menuItemCross" Header="_k-fold Cross Validation" Click="menuItemCross_Click"/>
+            </MenuItem>
+            <MenuItem Header="_Eksportuj do pliku CSV">
+                <MenuItem x:Name="exportTrain" Header="_najlepszy zbiór treningowy" Click="exportTrain_Click"/>
+                <MenuItem x:Name="exportValidate" Header="_najlepszy zbiór walidujący" Click="exportValidate_Click"/>
+                <MenuItem x:Name="exportTest" Header="_najlepszy zbiór testowy" Click="exportTest_Click"/>
+                <MenuItem x:Name="exportRule" Header="_najlepszy zbiór reguł" Click="exportRule_Click"/>
             </MenuItem>
         </Menu>
         <StatusBar DockPanel.Dock="Bottom">

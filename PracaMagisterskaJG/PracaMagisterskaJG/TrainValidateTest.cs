@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace PracaMagisterskaJG
 {
-    class TrainValidateTest
+    class TrainValidateTest : TrainMethod
     {
         public DataSetTVT dataSet;
         private RuleSet trainRuleSet;
-        public RuleSet validateRuleSet;
-        public int quality; // number of wrong classyfy in testDataSet
+       
         public TrainValidateTest(DataSetTVT dataSet)
         {
             this.dataSet = dataSet;
@@ -19,19 +19,20 @@ namespace PracaMagisterskaJG
             Validate();
             Test();
         }
-        
-        public void Train()
+        override
+        protected void Train()
         {
             GreedyAlgorithm greedyAlgorithm = new GreedyAlgorithm(dataSet.trainingSet, dataSet.headerRow, dataSet.decisionHeader);
             trainRuleSet = greedyAlgorithm.ruleSet;
         }
         public void Validate()
         {
-            validateRuleSet = Pruning();
+            ruleSet = Pruning();
         }
-        public void Test()
+        override
+        protected void Test()
         {
-            quality = GetNumberOfWrongClassyfy(validateRuleSet);
+            quality = Math.Round(ruleSet.GetNumberOfWrongClassyfy(dataSet.testSet) / (double)dataSet.testSet.Count, 3);
         }
         private RuleSet Pruning()
         {
@@ -58,7 +59,7 @@ namespace PracaMagisterskaJG
             List<int> numberOfWrongClassyfyList = new List<int>();
             foreach(RuleSet ruleSet in ruleSetsList)
             {
-                numberOfWrongClassyfyList.Add(GetNumberOfWrongClassyfy(ruleSet));
+                numberOfWrongClassyfyList.Add((int)ruleSet.GetNumberOfWrongClassyfy(dataSet.validationSet));
             }
             int indexOfLowest = 0;
             for(int i = 1; i < numberOfWrongClassyfyList.Count; i++)
@@ -70,20 +71,6 @@ namespace PracaMagisterskaJG
             }
             return ruleSetsList[indexOfLowest];
         }
-
-        private int GetNumberOfWrongClassyfy(RuleSet ruleSet)
-        {
-            int numberOfWrong = 0;
-            foreach(var example in dataSet.validationSet)
-            {
-                if(example[dataSet.decisionHeader] != ruleSet.GetListClassyfy(example))
-                {
-                    numberOfWrong++;
-                }
-            }
-            return numberOfWrong;
-        }
-
 
         private Rule GetSubruleOfInacurrany(Rule rule, double inaccurancy, int inaccuracyOfTrainingTable)
         {
@@ -172,9 +159,27 @@ namespace PracaMagisterskaJG
             return subset;
         }
 
-   
-        
-        
+        override
+        public void ExportSet(int set)
+        {
+            List<Dictionary<string, string>> setToExport;
+            switch (set)
+            {
+                case 0:
+                    setToExport = dataSet.trainingSet;
+                    break;
+                case 1:
+                    setToExport = dataSet.validationSet;
+                    break;
+                case 2:
+                    setToExport = dataSet.testSet;
+                    break;
+                default:
+                    return;
+            }
+            ExportCSV.SaveSetToFile(setToExport, dataSet.headerRow);
+        }
 
+        
     }
 }

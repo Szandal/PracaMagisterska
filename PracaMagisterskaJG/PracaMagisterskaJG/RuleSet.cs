@@ -26,6 +26,8 @@ namespace PracaMagisterskaJG
             ruleSet.Add(rule);
         }
 
+        
+
         public string GetListClassyfy(Dictionary<string,string> example)
         {
             foreach(Rule rule in ruleSet)
@@ -71,6 +73,20 @@ namespace PracaMagisterskaJG
                 rulesToPrint += rule.PrintRule() + '\n';
             }
             return rulesToPrint;
+        }
+
+
+        internal double GetNumberOfWrongClassyfy (List<Dictionary<string, string>> testSet)
+        {
+            double numberOfWrong = 0;
+            foreach (var example in testSet)
+            {
+                if (example[decisionHeader] != GetListClassyfy(example))
+                {
+                    numberOfWrong++;
+                }
+            }
+            return numberOfWrong;
         }
     }
 }

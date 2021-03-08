@@ -6,19 +6,18 @@ using System.Threading.Tasks;
 
 namespace PracaMagisterskaJG
 {
-    class k_foldCrossValidation
+    class k_foldCrossValidation : ValidationMetod
     {
         public DataSetCross dataSet;
-        public RuleSet ruleSet;
-        public List<int> qualityList;
+        public List<double> qualityList;
         private List<RuleSet> ruleSetList;
-        public double AVGQuality;
-        public int bestQuality;
+        
+        public double bestQuality;
         public int bestIndex;
         public k_foldCrossValidation(DataSetCross dataSet)
         {
             ruleSetList = new List<RuleSet>();
-            qualityList = new List<int>();
+            qualityList = new List<double>();
             this.dataSet = dataSet;
             //Parallel.For(0, dataSet.numberOfSets, i =>
             //{
@@ -50,22 +49,22 @@ namespace PracaMagisterskaJG
                 if (qualityList[q] < temp)
                     temp = q;
             }
-            bestQuality = qualityList[temp];
+            bestQuality = Math.Round(qualityList[temp],3);
             bestIndex = temp;
             ruleSet = ruleSetList[bestIndex];
         }
 
         private void SetAVGQuality()
         {
-            int sum = 0;
-            foreach(int q in qualityList)
+            double sum = 0;
+            foreach(double q in qualityList)
             {
                 sum += q;
             }
-            AVGQuality = sum / dataSet.numberOfSets;
+            quality = sum / (double)dataSet.numberOfSets;
         }
 
-        private int GetQualityOfRuleSet(int i, RuleSet rules)
+        private double GetQualityOfRuleSet(int i, RuleSet rules)
         {
             int numberOfWrong = 0;
             foreach (var example in dataSet.ListOfSets[i])
@@ -75,9 +74,29 @@ namespace PracaMagisterskaJG
                     numberOfWrong++;
                 }
             }
-            return numberOfWrong;
+            return Math.Round( (double)numberOfWrong / (double)dataSet.ListOfSets[i].Count, 3);
         }
 
+        internal void ExportSet(int set)
+        {
+            List<Dictionary<string, string>> setToExport;
+            switch (set)
+            {
+                case 0:
+                    setToExport = dataSet.GetTrainingSet(bestIndex);
+                    break;
+                case 1:
+                    setToExport = dataSet.ListOfSets[bestIndex];
+                    break;
+                default:
+                    return;
+            }
+            ExportCSV.SaveSetToFile(setToExport, dataSet.headerRow);
+        }
 
+        internal void ExportRules()
+        {
+            ExportCSV.ExportRuleSet(ruleSet);
+        }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:PracaMagisterskaJG"
         mc:Ignorable="d"
-        Title="NumberOfSetsDialog" Height="175" Width="450">
+        Title="Wprowadź dane" Height="175" Width="450">
     <Grid>
         <TextBox x:Name="tbNumberOfSets" HorizontalAlignment="Left" Height="23" Margin="298,59,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" Background="White" TextChanged="tbNumberOfSets_TextChanged" />
         <TextBlock HorizontalAlignment="Left" Margin="23,50,0,0" TextWrapping="Wrap" Text="Podaj ilość zbiorów na jaki ma zostać podzielony zbiór" VerticalAlignment="Top" Width="270"/>
