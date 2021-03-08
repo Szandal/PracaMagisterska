@@ -343,15 +343,15 @@ namespace PracaMagisterskaJG
             //crossList.Add(new k_foldCrossValidation(CrossDataSetsList[0]));
             try
             {
-                Parallel.ForEach(CrossDataSetsList, dataSet =>
-               {
-                   crossList.Add(new k_foldCrossValidation(dataSet));
-               }
-                );
-                //foreach (var dataSet in CrossDataSetsList)
+                // Parallel.ForEach(CrossDataSetsList, dataSet =>
                 //{
                 //    crossList.Add(new k_foldCrossValidation(dataSet));
                 //}
+                // );
+                foreach (var dataSet in CrossDataSetsList)
+                {
+                    crossList.Add(new k_foldCrossValidation(dataSet));
+                }
             }
             catch
             {

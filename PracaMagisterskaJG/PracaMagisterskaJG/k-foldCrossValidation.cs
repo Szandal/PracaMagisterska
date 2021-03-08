@@ -49,19 +49,19 @@ namespace PracaMagisterskaJG
                 if (qualityList[q] < temp)
                     temp = q;
             }
-            bestQuality = Math.Round(qualityList[temp],3);
+            bestQuality = qualityList[temp];
             bestIndex = temp;
             ruleSet = ruleSetList[bestIndex];
         }
 
         private void SetAVGQuality()
         {
-            double sum = 0;
-            foreach(double q in qualityList)
+            int sum = 0;
+            foreach(int q in qualityList)
             {
                 sum += q;
             }
-            quality = sum / (double)dataSet.numberOfSets;
+            quality = (double)sum / (double)dataSet.numberOfSets;
         }
 
         private double GetQualityOfRuleSet(int i, RuleSet rules)
